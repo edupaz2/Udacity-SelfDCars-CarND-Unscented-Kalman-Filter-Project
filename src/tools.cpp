@@ -5,7 +5,7 @@ using Eigen::VectorXd;
 using Eigen::MatrixXd;
 using std::vector;
 
-#define LOG_DEBUG
+//#define LOG_DEBUG
 
 #ifdef LOG_DEBUG
 #include <iostream>
