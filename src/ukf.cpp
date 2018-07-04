@@ -89,6 +89,13 @@ UKF::UKF() : is_initialized_(false), n_x_(5), n_aug_(7), lambda_(3-n_aug_) {
               0, std_radphi_*std_radphi_, 0,
               0, 0, std_radrd_*std_radrd_;
 
+  //create augmented state covariance
+  P_aug_ = MatrixXd(7, 7);
+  P_aug_.fill(0.0);
+  P_aug_.topLeftCorner(5, 5) = P_;
+  P_aug_(5, 5) = std_a_*std_a_;
+  P_aug_(6, 6) = std_yawdd_*std_yawdd_;
+
   DEBUG("UKF ctor end");
 }
 
@@ -163,9 +170,6 @@ void UKF::Prediction(double delta_t) {
   //create augmented mean vector
   VectorXd x_aug = VectorXd(7);
 
-  //create augmented state covariance
-  MatrixXd P_aug = MatrixXd(7, 7);
-
   //create sigma point matrix
   MatrixXd Xsig_aug = MatrixXd(n_aug_, 2 * n_aug_ + 1);
 
@@ -174,14 +178,11 @@ void UKF::Prediction(double delta_t) {
   x_aug(5) = 0;
   x_aug(6) = 0;
 
-  //create augmented covariance matrix
-  P_aug.fill(0.0);
-  P_aug.topLeftCorner(5, 5) = P_;
-  P_aug(5, 5) = std_a_*std_a_;
-  P_aug(6, 6) = std_yawdd_*std_yawdd_;
+  // fill augmented covariance matrix
+  P_aug_.topLeftCorner(5, 5) = P_;
 
   //create square root matrix
-  MatrixXd L = P_aug.llt().matrixL();
+  MatrixXd L = P_aug_.llt().matrixL();
 
   //create augmented sigma points
   Xsig_aug.col(0)  = x_aug;

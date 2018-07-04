@@ -73,6 +73,9 @@ public:
   MatrixXd R_lidar_;
   MatrixXd R_radar_;
 
+  //create augmented state covariance
+  MatrixXd P_aug_;
+
   /**
    * Constructor
    */
